@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="/upload" method="POST" enctype="multipart/form-data" >
+        <legend>Project NAME:</legend>
+        <input type="text" name="pname">
+        <legend>Project Files:</legend>
+        <input type="file" name="files"  />
+        <!-- <input type="file" name="files" mozdirectory webkitdirectory directory multiple /> -->
+        <button type="submit">Upload</button>
+    </form>
+
+    <br>
+    new project creation
+    <form action="/newproject" method="post">
+        <input type="text" name="pname" id="pname">
+        <button type="submit">Create</button>
+    </form>
+    <br><br>
+
+    view all projects
+    <a href="/projects">View All Projects</a>
+    <br><br><br>
+    view all deployments
+    <a href="/alldeployments">View All Deployments</a>
+    
+
+</body>
+
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Project</title>
+</head>
+
+<body>
+
+    <% projects.forEach(element => { %>
+        <p><%=element.projectName%></p>
+        <p><%=element.projectPath%></p>
+    <% }) %>
+    <form action="/newproject" method="post" enctype="multipart/form-data">
+        <legend>Project Name:</legend>
+        <input type="text" name="pname">
+        <legend>Subdomain Name:</legend>
+        <input type="text" name="unique_pname"><br>
+        <input type="file" name="files">
+        <input type="submit" value="CreateNewProject">
+    </form>
+</body>
+
+</html>
