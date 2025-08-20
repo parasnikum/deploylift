@@ -5,14 +5,12 @@ const path = require("path");
 
 const extract = require('extract-zip');
 const { depolymentModel } = require("../models/deployments.schema");
+const { singleProjectModel } = require("../models/project.schema");
 
 const genDeploymentId = async (req, res, next) => {
     const uniqueid = uuidv4(50);
-    req.deploymentPath = path.join(__dirname, "../uploads", `U-${req.user.id}`, `D-${uniqueid}`);
-    req.uniqueDeploymentId = `D-${uniqueid}`;
-    console.log(req.body);
-    console.log(req.files);
-
+    req.deploymentPath = path.join(__dirname, "../uploads", `${req.user.id}`, `${uniqueid}`);
+    req.uniqueDeploymentId = `${uniqueid}`;
     // req.deploymentPath = path.join(__dirname, "../uploads", `U-${req.user.id}`, `${req.body.unique_pname}`);
     // req.uniqueDeploymentId = `${req.body.unique_pname}`;
     next();
@@ -22,17 +20,13 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const uploadPath = req.deploymentPath;
         // Create the directory if it doesn't exist
-
         fs.mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath); // Path to save files
     },
-    filename: function (req, file, cb) {
-        const filePath = req.deploymentPath;
-
-        file.destination = path.dirname(filePath);
-        file.path = filePath;
-        req.finalPath = path.join(req.deploymentPath, file.originalname);
-        console.log("final path ", req.deploymentPath)
+    filename: async function (req, file, cb) {
+        // const filePath = req.deploymentPath;
+        // file.path = filePath;
+        req.zipPath = path.join(req.deploymentPath, file.originalname);
         cb(null, file.originalname);
     }
 });
@@ -40,15 +34,18 @@ const storage = multer.diskStorage({
 
 const extractFile = async (req, res, next) => {
     try {
-        console.log("user", req.user);
-        console.log("finalPath", typeof req.finalPath);
-        console.log("deploymentPath", typeof req.deploymentPath);
-        await extract(req.finalPath, { dir: req.deploymentPath })
-        fs.unlink(req.finalPath, (err) => {
+        await extract(req.zipPath, { dir: req.deploymentPath })
+        fs.unlink(req.zipPath, (err) => {
             if (err) throw err;
             console.log('File deleted!');
         });
-        depolymentModel.create({ userID: req.user.id, projectID: req.user.id, deploymentName: req.uniqueDeploymentId })
+        const { pname, unique_pname: psubdomain } = req.body;
+        if (pname && psubdomain) {
+            req.newprojectID = await singleProjectModel.create({ currentDepoledID: req.uniqueDeploymentId , projectName: pname, userID: req.user.id, subdomain: psubdomain, projectPath: req.deploymentPath })
+        }
+        const pid = req.newprojectID || req.params.projectID;
+        const deployedData = await depolymentModel.create({ userID: req.user.id, projectID: pid, deploymentName: req.uniqueDeploymentId })
+
         console.log('Extraction complete')
     } catch (err) {
         console.log(err);

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .card {
+            width: 70%;
+            height: 200px;
+            border: 2px solid black;
+        }
+    </style>
+</head>
+
+
+<body>
+    All Deploys
+
+    <% deploys.forEach(deplyment=> { %>
+        <div class="card">
+            <h3>
+                <%= deplyment.deploymentName%>
+            </h3>
+            <p>
+                <%= deplyment.updatedAt%>
+            </p>
+            <p>
+                <%= deplyment.createdAt%>
+            </p>
+            <p>
+                <%= deplyment%>
+            </p>
+
+            <form action="/setDeploy/<%=projectID%>" method="post">
+                <input type="text" name="deploymentID" value="<%=deplyment.deploymentName%>" hidden>
+                <input type="submit" value="Deploy now">
+            </form>
+
+
+        </div>
+        <% }) %>
+
+            <p>Create New deployment: </p>
+            <form action="/newDeployment/<%=projectID%>" method="post" enctype="multipart/form-data">
+                <input type="file" name="files">
+                <input type="submit" value="CreateNewProject">
+            </form>
+</body>
+
+</html>

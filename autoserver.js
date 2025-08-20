@@ -29,6 +29,8 @@ app.get(/(.*)/, async (req, res) => {
             res.send("no domain here")
         }
         projectPath = data.projectPath;
+        console.log("Path: ", data.projectPath);
+
         myCache.set(subdomain, projectPath, 1000);
     }
     projectPath = myCache.get(subdomain);

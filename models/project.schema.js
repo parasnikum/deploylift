@@ -19,6 +19,10 @@ const singleProjectSchema = mongoose.Schema({
     projectPath: {
         type: String,
         required: true,
+    },
+    currentDepoledID: {
+        type: String,
+        required: true,
     }
 }, { timestamps: true })
 
