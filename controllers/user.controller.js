@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { userModel } = require("../models/user.schema");
+require('dotenv').config()
+
+
 const JWT_SECRETE = process.env.JWT_SECRETE;
 const COOKIE_EXPIRE = process.env.COOKIE_EXPIRE || 2 * 24 * 60 * 60 * 1000; // default: 2 days
 
@@ -49,6 +52,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
+console.log(JWT_SECRETE);
 
         if (!email || !password) {
             return res.status(400).send("Email and password are required.");

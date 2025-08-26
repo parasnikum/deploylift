@@ -6,7 +6,7 @@ const { singleProjectModel } = require("./models/project.schema");
 const { connect } = require("./utils/db")
 connect();
 app.use(express.static(path.join(__dirname, "uploads"), { extensions: ['html'] }))
-
+2
 
 const NodeCache = require("node-cache");
 const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });

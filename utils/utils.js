@@ -2,7 +2,8 @@ const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
-
+const simpleGit = require('simple-git');
+simpleGit().clean(simpleGit.CleanOptions.FORCE);
 const extract = require('extract-zip');
 const { depolymentModel } = require("../models/deployments.schema");
 const { singleProjectModel } = require("../models/project.schema");
@@ -41,7 +42,7 @@ const extractFile = async (req, res, next) => {
         });
         const { pname, unique_pname: psubdomain } = req.body;
         if (pname && psubdomain) {
-            req.newprojectID = await singleProjectModel.create({ currentDepoledID: req.uniqueDeploymentId , projectName: pname, userID: req.user.id, subdomain: psubdomain, projectPath: req.deploymentPath })
+            req.newprojectID = await singleProjectModel.create({ currentDepoledID: req.uniqueDeploymentId, projectName: pname, userID: req.user.id, subdomain: psubdomain, projectPath: req.deploymentPath })
         }
         const pid = req.newprojectID || req.params.projectID;
         const deployedData = await depolymentModel.create({ userID: req.user.id, projectID: pid, deploymentName: req.uniqueDeploymentId })
@@ -50,11 +51,30 @@ const extractFile = async (req, res, next) => {
     } catch (err) {
         console.log(err);
     }
-    next()
+    next();
 }
 
+
+const repoSetup = async (req, res, next) => {
+    console.log(req.body);
+    console.log("Path", req.deploymentPath);
+    fs.mkdirSync(req.deploymentPath, { recursive: true });
+
+    await simpleGit().clone(req.body.repo_link, req.deploymentPath).then(() => {
+        console.log("Cloned")
+    }).catch((err) => {
+        console.log(err);
+    });;
+    const { pname, unique_pname: psubdomain } = req.body;
+    if (pname && psubdomain) {
+        req.newprojectID = await singleProjectModel.create({ currentDepoledID: req.uniqueDeploymentId, projectName: pname, userID: req.user.id, subdomain: psubdomain, projectPath: req.deploymentPath })
+    }
+    const pid = req.newprojectID || req.params.projectID;
+    const deployedData = await depolymentModel.create({ userID: req.user.id, projectID: pid, deploymentName: req.uniqueDeploymentId })
+    next();
+}
 
 const upload = multer({ storage: storage });
 const uploadFiles = upload.single("files");
 
-module.exports = { genDeploymentId, uploadFiles, upload, extractFile };
+module.exports = { genDeploymentId, uploadFiles, upload, extractFile, repoSetup };

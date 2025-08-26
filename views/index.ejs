@@ -1,38 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Netlify Clone Landing Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background-color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #111;
+    }
+
+    nav a {
+      margin-left: 30px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    nav a:hover {
+      color: #0070f3;
+    }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(to bottom, #ffffff, #f0f4f8);
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 40px;
+      color: #555;
+    }
+
+    .hero a {
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: #0070f3;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .hero a:hover {
+      background-color: #0059c1;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 20px 30px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      nav a {
+        margin-left: 15px;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+  </style>
 </head>
-
 <body>
-    <!-- <form action="/upload" method="POST" enctype="multipart/form-data" >
-        <legend>Project NAME:</legend>
-        <input type="text" name="pname">
-        <legend>Project Files:</legend>
-        <input type="file" name="files"  />
-        <input type="file" name="files" mozdirectory webkitdirectory directory multiple />
-        <button type="submit">Upload</button>
-    </form> -->
 
-    <!-- <br>
-    new project creation
-    <form action="/newproject" method="post">
-        <input type="text" name="pname" id="pname">
-        <button type="submit">Create</button>
-    </form>
-    <br><br> -->
+  <header>
+    <div class="logo">Gradilo</div>
+    <nav>
+      <a href="#">Features</a>
+      <a href="#">Pricing</a>
+      <a href="#">Docs</a>
+      <a href="#">Login</a>
+    </nav>
+  </header>
 
-    view all projects
-    <a href="/projects">View All Projects</a>
-    <br><br><br>
-    view all deployments
-    <a href="/alldeployments">View All Deployments</a>
-    
+  <section class="hero">
+    <h1>Deploy web projects with ease and speed</h1>
+    <p>Experience lightning-fast deployment, continuous integration, and global CDN with our modern hosting platform.</p>
+    <a href="/projects" class="cta-button">Get Started</a>
+
+  </section>
 
 </body>
-
-
 </html>

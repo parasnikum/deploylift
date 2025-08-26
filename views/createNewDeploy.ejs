@@ -2,51 +2,257 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        .card {
-            width: 70%;
-            height: 200px;
-            border: 2px solid black;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Deployments</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1117;
+      --card-bg: #1a1d24;
+      --text: #f1f1f1;
+      --muted: #999;
+      --border: #2c2f36;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --input-bg: #25272e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Sidebar styles */
+    aside.sidebar {
+      width: 220px;
+      background-color: var(--card-bg);
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      display: block;
+    }
+
+    .sidebar nav a:hover {
+      background-color: var(--border);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2.5rem;
+      font-weight: 600;
+    }
+
+    .deploy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    .card form {
+      margin-top: auto;
+    }
+
+    .card input[type="submit"] {
+      padding: 0.65rem 1rem;
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+    .card input[type="submit"]:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .upload-form {
+      background-color: var(--card-bg);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: 0 auto;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .upload-form h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .upload-form input[type="file"],
+    .upload-form input[type="text"] {
+      width: 100%;
+      padding: 0.6rem;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .upload-form input[type="submit"] {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .upload-form input[type="submit"]:hover {
+      background-color: var(--accent-hover);
+    }
+
+    @media (max-width: 960px) {
+      aside.sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card input[type="submit"] {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 
-
 <body>
-    All Deploys
 
-    <% deploys.forEach(deplyment=> { %>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>⚙️ Dashboard</h2>
+    <nav>
+      <ul>
+        <li><a href="/">🏠 Home</a></li>
+        <li><a href="/projects">📁 Projects</a></li>
+        <li><a href="/newproject">➕ New Project</a></li>
+        <li><a href="/analytics/<%= projectID %>">📊 Analytics</a></li>
+        <li><a href="/login">🔐 Login</a></li>
+        <li><a href="/register">📝 Register</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <h1>All Deployments</h1>
+
+    <div class="deploy-grid">
+      <% deploys.forEach(deployment => { %>
         <div class="card">
-            <h3>
-                <%= deplyment.deploymentName%>
-            </h3>
-            <p>
-                <%= deplyment.updatedAt%>
-            </p>
-            <p>
-                <%= deplyment.createdAt%>
-            </p>
-            <p>
-                <%= deplyment%>
-            </p>
+          <h3><%= deployment.deploymentName %></h3>
+          <p>Created: <%= new Date(deployment.createdAt).toLocaleString() %></p>
 
-            <form action="/setDeploy/<%=projectID%>" method="post">
-                <input type="text" name="deploymentID" value="<%=deplyment.deploymentName%>" hidden>
-                <input type="submit" value="Deploy now">
-            </form>
-
-
+          <form action="/setDeploy/<%= projectID %>" method="post">
+            <input type="text" name="deploymentID" value="<%= deployment.deploymentName %>" hidden>
+            <input type="submit" value="Deploy Now" />
+          </form>
         </div>
-        <% }) %>
+      <% }) %>
+    </div>
 
-            <p>Create New deployment: </p>
-            <form action="/newDeployment/<%=projectID%>" method="post" enctype="multipart/form-data">
-                <input type="file" name="files">
-                <input type="submit" value="CreateNewProject">
-            </form>
+    <div class="upload-form">
+      <h2>Create New Deployment</h2>
+      <p>Upload .zip</p>
+      <form action="/newDeployment/<%= projectID %>" method="post" enctype="multipart/form-data">
+        <input accept=".zip" type="file" name="files" required />
+        <input type="submit" value="Upload & Deploy" />
+      </form>
+
+      <h2>Deploy from the Repo link</h2>
+      <p>Paste your repo link</p>
+      <form action="/newDeployment/repo/<%= projectID %>" method="post">
+        <input type="text" name="repo_link" />
+        <input type="submit" value="Upload & Deploy" />
+      </form>
+    </div>
+  </main>
+
 </body>
 
 </html>

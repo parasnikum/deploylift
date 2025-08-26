@@ -2,26 +2,237 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create New Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1117;
+      --bg-card: #1a1d24;
+      --text: #f1f1f1;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --border: #2d2f36;
+      --input-bg: #25272e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    aside.sidebar {
+      width: 220px;
+      background-color: var(--bg-card);
+      padding: 2rem 1rem;
+      border-right: 1px solid var(--border);
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .sidebar h2 {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sidebar nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+      display: block;
+    }
+
+    .sidebar nav a:hover {
+      background-color: var(--border);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 2rem;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      aside.sidebar {
+        display: none;
+      }
+    }
+
+    .project-list {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: box-shadow 0.3s ease;
+    }
+
+    .project-card:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .project-card a {
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-card p {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .form-container {
+      background-color: var(--bg-card);
+      padding: 2rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .form-container h2 {
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 0.65rem;
+      background-color: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    input[type="file"] {
+      padding: 0.5rem;
+    }
+
+    .form-container input[type="submit"] {
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      width: 100%;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-container input[type="submit"]:hover {
+      background-color: var(--accent-hover);
+    }
+  </style>
 </head>
 
 <body>
 
-    <% projects.forEach(element => { %>
-        <a href="/<%=element._id%>/deployments">  <p><%=element.projectName%></p></a>
-      
-        <p><%=element.projectPath%></p>
-    <% }) %>
-    <form action="/newproject" method="post" enctype="multipart/form-data">
-        <legend>Project Name:</legend>
-        <input type="text" name="pname">
-        <legend>Subdomain Name:</legend>
-        <input type="text" name="unique_pname"><br>
-        <input type="file" name="files">
-        <input type="submit" value="CreateNewProject">
-    </form>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>⚙️ Dashboard</h2>
+    <nav>
+      <ul>
+        <li><a href="/">🏠 Home</a></li>
+        <li><a href="/projects">📁 Projects</a></li>
+        <li><a href="/login">🔐 Login</a></li>
+        <li><a href="/register">📝 Register</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <h1>Projects Dashboard</h1>
+
+    <div class="dashboard">
+      <!-- Left: Project List -->
+      <div class="project-list">
+        <% projects.forEach(element => { %>
+          <div class="project-card">
+            <a href="/<%= element._id %>/deployments"><%= element.projectName %></a>
+            <p>Check Page:- <a target="_blank" href="http://<%= element.subdomain %>.localhost:3003"><%= element.subdomain %>.localhost:3003</a></p>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Right: Create Project Form -->
+      <div class="form-container">
+        <h2>Create New Project</h2>
+        <form action="/newproject" method="post" enctype="multipart/form-data">
+          <label for="pname">Project Name</label>
+          <input type="text" name="pname" id="pname" required />
+
+          <label for="unique_pname">Subdomain Name</label>
+          <input type="text" name="unique_pname" id="unique_pname" required />
+
+          <label for="files">Upload Files</label>
+          <input type="file" name="files" id="files" required />
+
+          <input type="submit" value="Create Project" />
+        </form>
+      </div>
+    </div>
+  </main>
+
 </body>
 
 </html>
