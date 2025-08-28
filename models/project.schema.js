@@ -23,6 +23,9 @@ const singleProjectSchema = mongoose.Schema({
     currentDepoledID: {
         type: String,
         required: true,
+    },
+    customDomain: {
+        type: String,
     }
 }, { timestamps: true })
 

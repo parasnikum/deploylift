@@ -115,7 +115,7 @@ app.post("/setDeploy/:projectID", auth, async (req, res) => {
             }
         },
         {
-            new: true 
+            new: true
         }
     );
     client.set(updatedProject.subdomain, newPath, {
@@ -152,6 +152,45 @@ app.get("/analytics/:projectId", async (req, res) => {
         res.status(500).send("Internal server error");
     }
 });
+
+
+
+app.post("/customDomainSet/:projectId", async (req, res) => {
+    const { projectId } = req.params;
+    const { domain } = req.body;
+
+    try {
+        const project = await singleProjectModel.findById(projectId);
+        if (!project) {
+            return res.status(404).send("Project not found");
+        }
+        if (!domain) {
+            return res.status(404).send("Custom Domain Feild Must need to fill");
+        }
+
+        const subdomain = project.subdomain;
+        
+        const updatedProject = await singleProjectModel.findOneAndUpdate(
+            { _id: projectId},
+            {
+                $set: {
+                    customDomain: domain,
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        res.send("Custom Domain Setup !");
+    } catch (error) {
+        console.error("Error in analytics route:", error);
+        res.status(500).send("Internal server error");
+    }
+});
+
+
+
 
 
 

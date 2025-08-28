@@ -223,17 +223,20 @@
     <h1>All Deployments</h1>
 
     <div class="deploy-grid">
-      <% deploys.forEach(deployment => { %>
+      <% deploys.forEach(deployment=> { %>
         <div class="card">
-          <h3><%= deployment.deploymentName %></h3>
-          <p>Created: <%= new Date(deployment.createdAt).toLocaleString() %></p>
+          <h3>
+            <%= deployment.deploymentName %>
+          </h3>
+          <p>Created: <%= new Date(deployment.createdAt).toLocaleString() %>
+          </p>
 
           <form action="/setDeploy/<%= projectID %>" method="post">
             <input type="text" name="deploymentID" value="<%= deployment.deploymentName %>" hidden>
             <input type="submit" value="Deploy Now" />
           </form>
         </div>
-      <% }) %>
+        <% }) %>
     </div>
 
     <div class="upload-form">
@@ -250,8 +253,16 @@
         <input type="text" name="repo_link" />
         <input type="submit" value="Upload & Deploy" />
       </form>
+
+      <h2>Add Custom Domain</h2>
+      <form action="/customDomainSet/<%= projectID %>" method="post">
+        <input type="text" name="domain" placeholder="yourdomain.com">
+        <input type="submit" value="Connect my Domain" />
+      </form>
     </div>
   </main>
+
+
 
 </body>
 
