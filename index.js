@@ -26,6 +26,12 @@ app.use(express.static(path.join(__dirname, "views")))
 
 connect()
 
+app.use('/:projectId/preview/:deploymentId', (req, res, next) => {
+    const { projectId, deploymentId } = req.params;
+    const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
+
+    express.static(baseDir)(req, res, next);
+});
 const client = await createClient(
     { url: process.env.REDIS_URL }
 )
@@ -101,31 +107,31 @@ app.get("/:projectID/deployments", auth, async (req, res) => {
     const deploys = await depolymentModel.find({ projectID: projectid }).limit(5)
     const projectData = await singleProjectModel.findOne({ _id: projectid }).limit(5)
 
-    res.render("createNewDeploy", { deploys, projectID: projectid, currentDeployment: projectData.currentDepoledID })
+    res.render("createNewDeploy", { deploys, projectID: projectid, currentDeployment: projectData.currentDepoledID , projectData })
 })
 
-app.post("/setDeploy/:projectID", auth, async (req, res) => {
-    const newPath = path.join(__filename, "../uploads", `${req.user.id}`, `${req.body.deploymentID}`);
-    const updatedProject = await singleProjectModel.findOneAndUpdate(
-        { _id: req.params.projectID, userID: req.user.id },
-        {
-            $set: {
-                currentDepoledID: req.body.deploymentID,
-                projectPath: newPath
+    app.post("/setDeploy/:projectID", auth, async (req, res) => {
+        const newPath = path.join(__filename, "../uploads", `${req.user.id}`, `${req.body.deploymentID}`);
+        const updatedProject = await singleProjectModel.findOneAndUpdate(
+            { _id: req.params.projectID, userID: req.user.id },
+            {
+                $set: {
+                    currentDepoledID: req.body.deploymentID,
+                    projectPath: newPath
+                }
+            },
+            {
+                new: true
             }
-        },
-        {
-            new: true
-        }
-    );
-    client.set(updatedProject.subdomain, newPath, {
-        expiration: {
-            type: 'EX',
-            value: 40
-        }
-    })
-    res.send("Set As New Deployment");
-});
+        );
+        client.set(updatedProject.subdomain, newPath, {
+            expiration: {
+                type: 'EX',
+                value: 40
+            }
+        })
+        res.send("Set As New Deployment");
+    });
 
 
 
@@ -169,9 +175,9 @@ app.post("/customDomainSet/:projectId", async (req, res) => {
         }
 
         const subdomain = project.subdomain;
-        
+
         const updatedProject = await singleProjectModel.findOneAndUpdate(
-            { _id: projectId},
+            { _id: projectId },
             {
                 $set: {
                     customDomain: domain,
@@ -189,6 +195,34 @@ app.post("/customDomainSet/:projectId", async (req, res) => {
     }
 });
 
+app.get('/:projectId/preview/:deploymentId', (req, res) => {
+    const { projectId, deploymentId } = req.params;
+    const subPath = req.path.replace(`/${projectId}/preview/${deploymentId}`, '') || '/';
+
+    const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
+    let filePath;
+
+    if (subPath === '/' || subPath === '') {
+        filePath = path.join(baseDir, 'index.html');
+    } else if (subPath.endsWith('/index')) {
+        return res.redirect(`/${projectId}/preview/${deploymentId}/`);
+    } else if (subPath.endsWith('.html')) {
+        const cleanPath = subPath.replace(/\.html$/, '');
+        return res.redirect(`/${projectId}/preview/${deploymentId}${cleanPath}`);
+    } else {
+        filePath = path.join(baseDir, subPath);
+        if (!path.extname(filePath)) {
+            filePath += '.html';
+        }
+    }
+
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error('File not found:', filePath);
+            res.status(404).send('Page not found');
+        }
+    });
+});
 
 
 

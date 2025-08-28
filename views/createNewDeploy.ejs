@@ -198,6 +198,46 @@
         font-size: 0.9rem;
       }
     }
+
+    .card-actions {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      border: none;
+    }
+
+    .btn.primary {
+      background-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn.primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn.secondary {
+      background-color: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn.secondary:hover {
+      background-color: var(--accent);
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -231,36 +271,45 @@
           <p>Created: <%= new Date(deployment.createdAt).toLocaleString() %>
           </p>
 
-          <form action="/setDeploy/<%= projectID %>" method="post">
-            <input type="text" name="deploymentID" value="<%= deployment.deploymentName %>" hidden>
-            <input type="submit" value="Deploy Now" />
-          </form>
+          <div class="card-actions">
+            <form action="/setDeploy/<%= projectID %>" method="post">
+              <input type="hidden" name="deploymentID" value="<%= deployment.deploymentName %>">
+              <button type="submit" class="btn primary">🚀 Deploy Now</button>
+            </form>
+            <a class="btn secondary" href="/<%= projectData.userID %>/preview/<%= deployment.deploymentName %>"
+              target="_blank">👁️ Preview</a>
+          </div>
         </div>
         <% }) %>
     </div>
 
     <div class="upload-form">
       <h2>Create New Deployment</h2>
-      <p>Upload .zip</p>
+
       <form action="/newDeployment/<%= projectID %>" method="post" enctype="multipart/form-data">
-        <input accept=".zip" type="file" name="files" required />
-        <input type="submit" value="Upload & Deploy" />
+        <label for="zip-upload">Upload .zip</label>
+        <input id="zip-upload" accept=".zip" type="file" name="files" required />
+        <button type="submit" class="btn primary">📦 Upload & Deploy</button>
       </form>
 
-      <h2>Deploy from the Repo link</h2>
-      <p>Paste your repo link</p>
+      <hr style="margin: 2rem 0; border-color: var(--border);">
+
       <form action="/newDeployment/repo/<%= projectID %>" method="post">
-        <input type="text" name="repo_link" />
-        <input type="submit" value="Upload & Deploy" />
+        <label for="repo-link">Deploy from Repo Link</label>
+        <input id="repo-link" type="text" name="repo_link" placeholder="https://github.com/username/repo" />
+        <button type="submit" class="btn primary">🔗 Deploy from Repo</button>
       </form>
 
-      <h2>Add Custom Domain</h2>
+      <hr style="margin: 2rem 0; border-color: var(--border);">
+
       <form action="/customDomainSet/<%= projectID %>" method="post">
-        <input type="text" name="domain" placeholder="yourdomain.com">
-        <input type="submit" value="Connect my Domain" />
+        <label for="domain">Add Custom Domain</label>
+        <input id="domain" type="text" name="domain" placeholder="yourdomain.com">
+        <button type="submit" class="btn primary">🌐 Connect Domain</button>
       </form>
     </div>
   </main>
+
 
 
 
