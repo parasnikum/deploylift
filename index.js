@@ -26,12 +26,64 @@ app.use(express.static(path.join(__dirname, "views")))
 
 connect()
 
-app.use('/:projectId/preview/:deploymentId', (req, res, next) => {
-    const { projectId, deploymentId } = req.params;
-    const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
 
-    express.static(baseDir)(req, res, next);
+
+app.use(async (req, res, next) => {
+    const host = req.hostname;
+    console.log(host);
+    console.log(host.split('.')[0]);
+    
+    // Check if request is for custom domain or subdomain
+    try {
+        const project = await singleProjectModel.findOne({
+            $or: [
+                { subdomain: host.split('.')[0] },
+                { customDomain: host }
+            ]
+        });
+
+        if (project) {
+            const deploymentId = project.currentDepoledID;
+            const projectId = project._id.toString();
+            const baseDir = project.projectPath;
+
+            // If root, serve index.html
+            let filePath = path.join(baseDir, "index.html");
+
+            // Allow sub-routes
+            const subPath = req.path === "/" ? "" : req.path;
+            if (subPath && subPath !== "/") {
+                filePath = path.join(baseDir, subPath);
+                if (!path.extname(filePath)) {
+                    filePath += ".html";
+                }
+            }
+
+            return res.sendFile(filePath, (err) => {
+                if (err) {
+                    console.error("File not found:", filePath);
+                    return res.status(404).send("Page not found");
+                }
+            });
+        } else {
+            // Not a custom domain or subdomain request, continue to normal routes
+            return next();
+        }
+    } catch (err) {
+        console.error("Error in domain middleware:", err);
+        next();
+    }
 });
+
+
+
+
+// app.use('/:projectId/preview/:deploymentId', (req, res, next) => {
+//     const { projectId, deploymentId } = req.params;
+//     const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
+
+//     express.static(baseDir)(req, res, next);
+// });
 const client = await createClient(
     { url: process.env.REDIS_URL }
 )
