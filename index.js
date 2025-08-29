@@ -30,8 +30,6 @@ connect()
 
 app.use(async (req, res, next) => {
     const host = req.hostname;
-    console.log(host);
-    console.log(host.split('.')[0]);
     
     // Check if request is for custom domain or subdomain
     try {
@@ -78,12 +76,12 @@ app.use(async (req, res, next) => {
 
 
 
-// app.use('/:projectId/preview/:deploymentId', (req, res, next) => {
-//     const { projectId, deploymentId } = req.params;
-//     const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
+app.use('/:projectId/preview/:deploymentId', (req, res, next) => {
+    const { projectId, deploymentId } = req.params;
+    const baseDir = path.join(__dirname, 'uploads', projectId, deploymentId);
 
-//     express.static(baseDir)(req, res, next);
-// });
+    express.static(baseDir)(req, res, next);
+});
 const client = await createClient(
     { url: process.env.REDIS_URL }
 )
@@ -259,14 +257,14 @@ app.get('/:projectId/preview/:deploymentId', (req, res) => {
     } else if (subPath.endsWith('/index')) {
         return res.redirect(`/${projectId}/preview/${deploymentId}/`);
     } else if (subPath.endsWith('.html')) {
-        const cleanPath = subPath.replace(/\.html$/, '');
-        return res.redirect(`/${projectId}/preview/${deploymentId}${cleanPath}`);
+        filePath = path.join(baseDir, subPath);
     } else {
         filePath = path.join(baseDir, subPath);
         if (!path.extname(filePath)) {
             filePath += '.html';
         }
     }
+
 
     res.sendFile(filePath, (err) => {
         if (err) {
