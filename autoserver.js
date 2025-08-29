@@ -20,7 +20,7 @@ const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
 
 
 app.get(/(.*)/, async (req, res) => {
-    const isSubdomain = req.host.endsWith("localhost:3003");
+    const isSubdomain = req.host.endsWith(process.env.BASE_HOST);
     const identifier = isSubdomain ? req.hostname.split('.')[0] : req.hostname;
 
     let projectPath = myCache.get(identifier);
